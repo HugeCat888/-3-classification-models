@@ -5,7 +5,7 @@ preprocessing.py
 เพื่อให้ Train / Validation / Test / Inference ใช้ preprocessing เดียวกันทุกจุด
 ตามที่ระบุไว้ใน Section 10 ของ final_md
 
-Pipeline: Crop Leaf -> Preserve Aspect Ratio -> Resize -> Padding -> Model-specific preprocessing
+Pipeline: Preserve Aspect Ratio -> Resize -> Padding -> Model-specific preprocessing
 """
 
 import numpy as np
@@ -71,8 +71,7 @@ def get_preprocess_fn(model_name: str):
 
 def load_and_preprocess_image(image: Image.Image, model_name: str) -> np.ndarray:
     """
-    รับภาพ (PIL.Image, ควรเป็นภาพที่ crop ใบมาแล้วจาก YOLO/ground-truth box)
-    คืน numpy array ที่พร้อมป้อนเข้าโมเดล shape = (1, H, W, 3)
+    รับภาพ (PIL.Image) คืน numpy array ที่พร้อมป้อนเข้าโมเดล shape = (1, H, W, 3)
     """
     target_size = get_input_size(model_name)
     padded = resize_with_padding(image, target_size)
@@ -80,25 +79,3 @@ def load_and_preprocess_image(image: Image.Image, model_name: str) -> np.ndarray
     preprocess_fn = get_preprocess_fn(model_name)
     arr = preprocess_fn(arr)
     return np.expand_dims(arr, axis=0)
-
-
-def crop_box(image: Image.Image, box_xyxy, padding_ratio: float = 0.0) -> Image.Image:
-    """
-    Crop ภาพตาม bounding box (x1, y1, x2, y2) พร้อม optional padding รอบกรอบ
-    ใช้ทั้งตอนเตรียม classification dataset จาก ground-truth box (Section 3.3)
-    และตอน inference จริงจาก YOLO-predicted box (Section 14)
-    """
-    src_w, src_h = image.size
-    x1, y1, x2, y2 = box_xyxy
-    box_w, box_h = x2 - x1, y2 - y1
-
-    x1 -= box_w * padding_ratio
-    y1 -= box_h * padding_ratio
-    x2 += box_w * padding_ratio
-    y2 += box_h * padding_ratio
-
-    x1 = max(0, int(x1))
-    y1 = max(0, int(y1))
-    x2 = min(src_w, int(x2))
-    y2 = min(src_h, int(y2))
-    return image.crop((x1, y1, x2, y2))

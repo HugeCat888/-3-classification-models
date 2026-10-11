@@ -1,0 +1,69 @@
+
+====================================================================
+  MODEL EVALUATION REPORT: [resnet50 (v1)]
+  อ้างอิง: JIKO Unkhair (CNN Durian Leaf) & JUTIF Unsoed (VGG-16 Transfer)
+====================================================================
+Checkpoint       : .\weights\resnet50_v1_best.keras
+Test Set Images  : 300
+Model Parameters : 23,597,984
+Model File Size  : 200.84 MB
+Avg Latency/Img  : 45.570 ms
+
+--------------------------------------------------------------------
+[A] ACCURACY & CLASSIFICATION METRICS (Unseen Test Set)
+--------------------------------------------------------------------
+  Overall Accuracy       : 0.6800  (68.00%)
+  Test Loss (CCE)        : 0.7999
+  Macro  Precision       : 0.7428
+  Macro  Recall          : 0.6800
+  Macro  F1-Score        : 0.6540
+  Weighted F1-Score      : 0.6540
+
+  Detailed Per-Class Classification Report:
+              precision    recall  f1-score   support
+
+    Monthong     0.6383    1.0000    0.7792        60
+      Chanee     0.8649    0.5333    0.6598        60
+      Kanyao     0.5128    0.6667    0.5797        60
+  BlackThorn     0.9412    0.2667    0.4156        60
+  MusangKing     0.7568    0.9333    0.8358        60
+
+    accuracy                         0.6800       300
+   macro avg     0.7428    0.6800    0.6540       300
+weighted avg     0.7428    0.6800    0.6540       300
+
+
+--------------------------------------------------------------------
+[C] LEARNING CURVE DIAGNOSIS
+--------------------------------------------------------------------
+  Total Epochs Logged    : 23
+  Best Model at Epoch    : 15
+  Train Loss @ Best      : 0.2779
+  Val   Loss @ Best      : 0.8609
+  Train Acc  @ Best      : 89.64%
+  Val   Acc  @ Best      : 68.33%
+  Train-Val Acc Gap      : 21.31%
+  Fit Status             : Underfitting (High Bias)
+  Explanation            : โมเดลยังเรียนรู้รูปแบบภาพใบได้ไม่เพียงพอ ควรเพิ่มความจุโมเดลหรือจำนวน epoch
+
+--------------------------------------------------------------------
+[E] UNSEEN GENERALIZATION ASSESSMENT
+--------------------------------------------------------------------
+  Validation Acc         : 68.33%
+  Unseen Test Acc        : 68.00%
+  Val -> Unseen Gap      : +0.33%
+  Generalization Status  : Robust Unseen Generalization
+  Explanation            : Unseen Test (68.0%) ใกล้เคียง/สูงกว่า Validation (68.3%) — generalize ได้ยอดเยี่ยม
+
+--------------------------------------------------------------------
+[D] CONFUSION MATRIX (Unseen Test Set — Raw Counts)
+--------------------------------------------------------------------
+                        Monthong      Chanee      Kanyao  BlackThorn  MusangKing
+  Monthong                    60           0           0           0           0
+  Chanee                      12          32          16           0           0
+  Kanyao                      17           3          40           0           0
+  BlackThorn                   2           2          22          16          18
+  MusangKing                   3           0           0           1          56
+
+  (Normalized Confusion Matrix saved as PNG)
+====================================================================

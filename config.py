@@ -1,9 +1,8 @@
 """
 config.py
 ---------
-ค่ากลางของทั้งโปรเจกต์ (ไม่มีใน Section 15 เดิม แต่เพิ่มเข้ามาเพื่อให้ทุกสคริปต์
-อ้างอิงค่าเดียวกัน — สอดคล้องกับ Section 17 และ Section 19 ของ final_md ที่กำหนดว่า
-hyperparameter / class names ต้องคงที่และ log ได้ตลอดทั้งโปรเจกต์)
+ค่ากลางของทั้งโปรเจกต์ สำหรับ Classification Pipeline
+(class names, paths, hyperparameters, reproducibility)
 """
 
 import os
@@ -34,16 +33,20 @@ CLASS_NAMES_TH = {
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-YOLO_DATA_DIR = os.path.join(DATA_DIR, "yolo")
-DETECTION_DATA_DIR = YOLO_DATA_DIR
 CLASSIFICATION_DATA_DIR = os.path.join(DATA_DIR, "classification")
 
 TRAIN_DIR = os.path.join(CLASSIFICATION_DATA_DIR, "train")
-VAL_DIR = os.path.join(CLASSIFICATION_DATA_DIR, "validation")
+
+# รองรับทั้งชื่อโฟลเดอร์ 'valid' และ 'validation'
+_val_candidate = os.path.join(CLASSIFICATION_DATA_DIR, "valid")
+if os.path.isdir(_val_candidate):
+    VAL_DIR = _val_candidate
+else:
+    VAL_DIR = os.path.join(CLASSIFICATION_DATA_DIR, "validation")
+
 TEST_DIR = os.path.join(CLASSIFICATION_DATA_DIR, "test")
 
 WEIGHTS_DIR = os.path.join(PROJECT_ROOT, "weights")
-YOLO_DATA_YAML = os.path.join(DETECTION_DATA_DIR, "data.yaml")
 
 # ---------------------------------------------------------------------------
 # 3) Input size decision (Section 10.1)
@@ -102,14 +105,4 @@ CLASSIFIER_DEFAULTS = dict(
     unfreeze_last_n_layers=30,
 )
 
-YOLO_DEFAULTS = dict(
-    imgsz=640,
-    epochs=100,
-    batch=16,
-    patience=20,
-)
 
-# ---------------------------------------------------------------------------
-# 6) Streamlit / inference (Section 14.4)
-# ---------------------------------------------------------------------------
-DETECTION_CONFIDENCE_THRESHOLD = 0.35

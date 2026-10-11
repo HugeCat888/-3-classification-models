@@ -44,8 +44,8 @@ from models import get_model_module
 def parse_args():
     p = argparse.ArgumentParser(description="Train a durian-leaf classifier (Section 9 / 17).")
     p.add_argument("--model", required=True, choices=["efficientnet_b0", "mobilenetv3_large", "resnet50"])
-    p.add_argument("--augmentation", default="none", choices=["none", "v1", "v2", "v3"],
-                   help="Augmentation version ตาม Section 4 (none = No Augmentation baseline)")
+    p.add_argument("--augmentation", default="none", choices=["none", "v1", "v2"],
+                   help="Augmentation version: none=Baseline, v1=Mild+Noise/Blur, v2=Moderate+Noise/Blur")
     p.add_argument("--train_dir", default=TRAIN_DIR)
     p.add_argument("--val_dir", default=VAL_DIR)
     p.add_argument("--batch_size", type=int, default=CLASSIFIER_DEFAULTS["batch_size"])
@@ -57,6 +57,10 @@ def parse_args():
     p.add_argument("--patience", type=int, default=CLASSIFIER_DEFAULTS["early_stopping_patience"])
     p.add_argument("--seed", type=int, default=RANDOM_SEED)
     p.add_argument("--dropout", type=float, default=0.3)
+    p.add_argument("--oversample", action="store_true",
+                   help="เปิด oversampling บน train set เพื่อแก้ปัญหาข้อมูลน้อย/imbalance")
+    p.add_argument("--oversample_target", type=int, default=None,
+                   help="จำนวนภาพต่อ class หลัง oversample (None = ใช้ class ที่มากสุดเป็นเป้าหมาย)")
     return p.parse_args()
 
 
@@ -75,6 +79,7 @@ def main():
     train_ds, n_train = build_dataset(
         args.train_dir, args.model, args.batch_size,
         shuffle=True, augmentation_layer=None, seed=args.seed,
+        oversample=args.oversample, oversample_target=args.oversample_target,
     )
     val_ds, n_val = build_dataset(
         args.val_dir, args.model, args.batch_size,

@@ -1,21 +1,14 @@
 # ==========================================
-# Durian Leaf Detection & Classification
+# Durian Leaf Classification
 # ==========================================
 
 # Classification
 tensorflow-cpu==2.21.0
 
-# Object Detection
---extra-index-url https://download.pytorch.org/whl/cpu
-torch
-torchvision
-ultralytics==8.4.164
-
 # Web Application Interface
 streamlit==1.64.0
 
 # Image Processing
-
 pillow>=10.0
 
 # Data
