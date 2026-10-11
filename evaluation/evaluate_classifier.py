@@ -40,6 +40,10 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix
@@ -103,7 +107,7 @@ def main():
 
     # ── 1. Load model & Unseen Test Set ─────────────────────────────────────
     print("\n[1/5] Loading model and building unseen test dataset...")
-    model = tf.keras.models.load_model(args.checkpoint)
+    model = tf.keras.models.load_model(args.checkpoint, compile=False)
     test_ds, n_test = build_dataset(args.test_dir, args.model, args.batch_size, shuffle=False)
 
     # ── 2. Inference ─────────────────────────────────────────────────────────

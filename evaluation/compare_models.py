@@ -154,7 +154,7 @@ def main():
         print(f"[{idx+1}/{len(valid_runs)}] Evaluating: {label}")
         print(f"  Checkpoint: {ckpt_path}")
 
-        model = tf.keras.models.load_model(ckpt_path)
+        model = tf.keras.models.load_model(ckpt_path, compile=False)
         test_ds, n_test = build_dataset(args.test_dir, model_key, args.batch_size, shuffle=False)
 
         y_probs, y_true_onehot, elapsed = run_inference(model, test_ds, n_test)

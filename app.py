@@ -13,6 +13,7 @@ User Flow:
 
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+os.environ['KERAS_BACKEND'] = 'tensorflow'
 
 import streamlit as st
 import tensorflow as tf
@@ -143,7 +144,7 @@ def detect_arch_from_filename(filename: str) -> str | None:
 
 @st.cache_resource
 def load_classifier(checkpoint_path: str):
-    return tf.keras.models.load_model(checkpoint_path)
+    return tf.keras.models.load_model(checkpoint_path, compile=False)
 
 
 def confidence_bar_html(label: str, label_en: str, conf: float, color: str, rank: int) -> str:
